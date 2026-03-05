@@ -16,6 +16,9 @@ A VS Code extension with a **dedicated sidebar panel** for generating and execut
 - **Debug symbols**, stdlib selection, link libraries, extra flags
 - **Keyboard shortcuts**: `Cmd+Shift+R` (run), `Cmd+Shift+C` (copy)
 
+![Alt text](/screenshot.png)
+
+
 ## Installation
 
 ```bash
