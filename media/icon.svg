@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- Play triangle -->
+  <path d="M6 3.5L6 20.5L20 12Z" fill="#cccccc" opacity="0.85"/>
+  <!-- C++ text on top of play -->
+  <text x="7.5" y="15.2" font-family="Arial, sans-serif" font-weight="bold" font-size="7.5" fill="#1e1e1e" letter-spacing="-0.3">C++</text>
+</svg>

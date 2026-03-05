@@ -1,0 +1,97 @@
+{
+  "name": "cpp-run-command-gen",
+  "displayName": "C++ Run Command Generator",
+  "description": "Generate clang++/g++ compile & run commands with a sidebar panel. Configure compiler, C++ standard, flags, sanitizers, and more.",
+  "version": "2.0.0",
+  "publisher": "LEF9701",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "c++",
+    "cpp",
+    "clang++",
+    "g++",
+    "compile",
+    "run"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "icon": "media/icon.png",
+  "main": "./src/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "cppRunSidebar",
+          "title": "C++ Run",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "cppRunSidebar": [
+        {
+          "type": "webview",
+          "id": "cppRunGen.panel",
+          "name": "C++ Run Command"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "cppRunGen.run",
+        "title": "C++ Run: Compile & Run",
+        "icon": "media/run.svg"
+      },
+      {
+        "command": "cppRunGen.copyCommand",
+        "title": "C++ Run: Copy Command",
+        "icon": "$(copy)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "cppRunGen.run",
+          "when": "view == cppRunGen.panel",
+          "group": "navigation@1"
+        },
+        {
+          "command": "cppRunGen.copyCommand",
+          "when": "view == cppRunGen.panel",
+          "group": "navigation@2"
+        }
+      ],
+      "editor/title": [
+        {
+          "when": "resourceLangId == cpp || resourceLangId == c",
+          "command": "cppRunGen.run",
+          "group": "navigation@1"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "cppRunGen.run",
+        "key": "ctrl+shift+r",
+        "mac": "cmd+shift+r",
+        "when": "resourceLangId == cpp || resourceLangId == c"
+      },
+      {
+        "command": "cppRunGen.copyCommand",
+        "key": "ctrl+shift+c",
+        "mac": "cmd+shift+c",
+        "when": "resourceLangId == cpp || resourceLangId == c"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0"
+  }
+}
