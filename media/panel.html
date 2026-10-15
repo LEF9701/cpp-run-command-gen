@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src {{cspSource}}; script-src 'nonce-{{nonce}}';"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link rel="stylesheet" href="{{cssUri}}"/>
+</head>
+<body>
+<div class="panel">
+
+  <!-- ════ SOURCE FILES ════ -->
+  <div class="section" id="secFiles">
+    <div class="section-title">
+      <span>Source Files <span class="file-count" id="fileCount">0</span></span>
+      <div class="file-actions">
+        <button class="btn-sm" id="btnAddActive" title="Add the file in the current editor">+ Active</button>
+        <button class="btn-sm" id="btnAddFiles" title="Browse and select files">+ Browse</button>
+        <button class="btn-sm" id="btnClearFiles" title="Remove all files">✕ Clear</button>
+      </div>
+    </div>
+    <div class="file-list" id="fileList">
+      <div class="file-empty" id="fileEmpty">No files added — will use the active editor file.</div>
+    </div>
+  </div>
+
+  <hr class="sep"/>
+
+  <!-- ════ COMPILER ════ -->
+  <div class="section" id="secCompiler">
+    <div class="section-title">Compiler</div>
+    <div class="row">
+      <label for="compiler">Compiler</label>
+      <select id="compiler">
+        <option value="clang++">clang++</option>
+        <option value="g++">g++</option>
+        <option value="cl">MSVC cl</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="cppStandard">Standard</label>
+      <select id="cppStandard">
+        <option value="c++11">C++11</option>
+        <option value="c++14">C++14</option>
+        <option value="c++17">C++17</option>
+        <option value="c++20">C++20</option>
+        <option value="c++23">C++23</option>
+        <option value="c++2c">C++2c (26)</option>
+      </select>
+    </div>
+    <div class="row">
+      <label for="optimization">Optimization</label>
+      <select id="optimization">
+        <option value="-O0">-O0 (none)</option>
+        <option value="-O1">-O1</option>
+        <option value="-O2">-O2 (release)</option>
+        <option value="-O3">-O3 (aggressive)</option>
+        <option value="-Os">-Os (size)</option>
+        <option value="-Ofast">-Ofast</option>
+      </select>
+    </div>
+    <div class="row" id="stdlibRow">
+      <label for="stdlib">Stdlib</label>
+      <select id="stdlib">
+        <option value="default">Default</option>
+        <option value="libc++">libc++</option>
+        <option value="libstdc++">libstdc++</option>
+      </select>
+    </div>
+    <div class="hint" id="compilerHint"></div>
+  </div>
+
+  <!-- Warnings -->
+  <details id="secWarnings">
+    <summary>Warnings <span class="summary-count" id="warnCount"></span></summary>
+    <div class="detail-body">
+      <div class="check-grid" id="warningChecks">
+        <label class="check-item"><input type="checkbox" value="-Wall" checked/> -Wall</label>
+        <label class="check-item"><input type="checkbox" value="-Wextra" checked/> -Wextra</label>
+        <label class="check-item"><input type="checkbox" value="-Wpedantic"/> -Wpedantic</label>
+        <label class="check-item"><input type="checkbox" value="-Werror"/> -Werror</label>
+        <label class="check-item"><input type="checkbox" value="-Wshadow"/> -Wshadow</label>
+        <label class="check-item"><input type="checkbox" value="-Wconversion"/> -Wconversion</label>
+      </div>
+    </div>
+  </details>
+
+  <!-- Sanitizers -->
+  <details id="secSanitizers">
+    <summary>Sanitizers <span class="summary-count" id="sanCount"></span></summary>
+    <div class="detail-body">
+      <div class="check-grid" id="sanitizerChecks">
+        <label class="check-item"><input type="checkbox" value="address"/> ASan</label>
+        <label class="check-item"><input type="checkbox" value="undefined"/> UBSan</label>
+        <label class="check-item"><input type="checkbox" value="thread"/> TSan</label>
+        <label class="check-item"><input type="checkbox" value="memory"/> MSan</label>
+        <label class="check-item"><input type="checkbox" value="leak"/> Leak</label>
+      </div>
+      <div class="hint" id="sanitizerHint"></div>
+    </div>
+  </details>
+
+  <!-- Options -->
+  <details id="secOptions">
+    <summary>Options</summary>
+    <div class="detail-body">
+      <div class="check-grid">
+        <label class="check-item"><input type="checkbox" id="debugSymbols"/> Debug symbols</label>
+        <label class="check-item"><input type="checkbox" id="runAfterCompile" checked/> Run after compile</label>
+        <label class="check-item"><input type="checkbox" id="clearTerminal" checked/> Clear terminal</label>
+      </div>
+      <div class="row mt">
+        <label for="outputName">Output name</label>
+        <input type="text" id="outputName" placeholder="(auto from first file)"/>
+      </div>
+      <div class="row">
+        <label for="outputDir">Output dir</label>
+        <input type="text" id="outputDir" placeholder="(same as source)"/>
+      </div>
+      <div class="row">
+        <label for="linkLibraries">Link libs</label>
+        <input type="text" id="linkLibraries" placeholder="pthread, fmt, ..."/>
+      </div>
+      <div class="row">
+        <label for="additionalFlags">Extra flags</label>
+        <input type="text" id="additionalFlags" placeholder="-fno-exceptions ..."/>
+      </div>
+    </div>
+  </details>
+
+  <hr class="sep"/>
+
+  <!-- Command Preview -->
+  <div class="section" id="secPreview">
+    <div class="section-title">
+      <span>Command Preview</span>
+      <span class="tag-group">
+        <span class="tag edited" id="editedTag" hidden>edited</span>
+        <button class="link-btn" id="btnResetEdit" hidden title="Discard your edits and regenerate">reset</button>
+        <span class="tag" id="shellTag" title="Syntax follows your default terminal shell"></span>
+      </span>
+    </div>
+    <div class="preview-box preview-editable" id="preview" contenteditable="true" spellcheck="false"></div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="btn-row" id="secButtons">
+    <button class="btn-primary" id="btnRun">▶ Run</button>
+    <button class="btn-secondary" id="btnCopy">⎘ Copy</button>
+  </div>
+
+</div>
+<script nonce="{{nonce}}" src="{{jsUri}}"></script>
+</body>
+</html>
