@@ -1,28 +1,48 @@
 {
   "name": "cpp-run-command-gen",
   "displayName": "C++ Run Command Generator",
-  "description": "Generate clang++/g++ compile & run commands with a sidebar panel. Configure compiler, C++ standard, flags, sanitizers, and more.",
-  "version": "2.0.0",
-  "publisher": "LEF9701",
+  "description": "Build clang++ / g++ / MSVC compile-and-run commands from a sidebar panel: pick the standard, optimization, warnings and sanitizers, preview the command, run it in one click.",
+  "version": "2.1.0",
+  "publisher": "lawrenceshin",
+  "author": {
+    "name": "Lawrence Shin"
+  },
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#1e2430",
+    "theme": "dark"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LEF9701/cpp-run-command-gen.git"
+  },
+  "homepage": "https://github.com/LEF9701/cpp-run-command-gen#readme",
+  "bugs": {
+    "url": "https://github.com/LEF9701/cpp-run-command-gen/issues"
+  },
   "engines": {
     "vscode": "^1.80.0"
   },
   "categories": [
-    "Other",
-    "Programming Languages"
+    "Programming Languages",
+    "Other"
   ],
   "keywords": [
     "c++",
     "cpp",
-    "clang++",
-    "g++",
+    "clang",
+    "gcc",
+    "msvc",
     "compile",
-    "run"
+    "run",
+    "sanitizer",
+    "competitive programming"
   ],
   "activationEvents": [
-    "onStartupFinished"
+    "onLanguage:cpp",
+    "onLanguage:c"
   ],
-  "icon": "media/icon.png",
   "main": "./src/extension.js",
   "contributes": {
     "viewsContainers": {
@@ -46,13 +66,21 @@
     "commands": [
       {
         "command": "cppRunGen.run",
-        "title": "C++ Run: Compile & Run",
-        "icon": "media/run.svg"
+        "title": "Compile & Run",
+        "category": "C++ Run",
+        "icon": "$(play)"
       },
       {
         "command": "cppRunGen.copyCommand",
-        "title": "C++ Run: Copy Command",
+        "title": "Copy Command",
+        "category": "C++ Run",
         "icon": "$(copy)"
+      },
+      {
+        "command": "cppRunGen.resetOptions",
+        "title": "Reset Options to Defaults",
+        "category": "C++ Run",
+        "icon": "$(discard)"
       }
     ],
     "menus": {
@@ -66,12 +94,17 @@
           "command": "cppRunGen.copyCommand",
           "when": "view == cppRunGen.panel",
           "group": "navigation@2"
+        },
+        {
+          "command": "cppRunGen.resetOptions",
+          "when": "view == cppRunGen.panel",
+          "group": "navigation@3"
         }
       ],
       "editor/title": [
         {
-          "when": "resourceLangId == cpp || resourceLangId == c",
           "command": "cppRunGen.run",
+          "when": "resourceLangId == cpp || resourceLangId == c",
           "group": "navigation@1"
         }
       ]
@@ -79,17 +112,43 @@
     "keybindings": [
       {
         "command": "cppRunGen.run",
-        "key": "ctrl+shift+r",
-        "mac": "cmd+shift+r",
-        "when": "resourceLangId == cpp || resourceLangId == c"
+        "key": "ctrl+alt+r",
+        "mac": "cmd+alt+r",
+        "when": "editorTextFocus && (resourceLangId == cpp || resourceLangId == c)"
       },
       {
         "command": "cppRunGen.copyCommand",
-        "key": "ctrl+shift+c",
-        "mac": "cmd+shift+c",
-        "when": "resourceLangId == cpp || resourceLangId == c"
+        "key": "ctrl+alt+c",
+        "mac": "cmd+alt+c",
+        "when": "editorTextFocus && (resourceLangId == cpp || resourceLangId == c)"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "C++ Run Command Generator",
+      "properties": {
+        "cppRunGen.shell": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "powershell",
+            "cmd",
+            "bash"
+          ],
+          "enumDescriptions": [
+            "Match your default terminal shell",
+            "PowerShell syntax (Windows default)",
+            "Command Prompt syntax",
+            "bash / zsh / Git Bash syntax"
+          ],
+          "default": "auto",
+          "description": "Which shell syntax the generated command uses. 'auto' follows your default VS Code terminal."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "package": "npx @vscode/vsce package"
   },
   "devDependencies": {
     "@types/vscode": "^1.80.0"

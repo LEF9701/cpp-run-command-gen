@@ -1,6 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-  <!-- Play triangle -->
-  <path d="M6 3.5L6 20.5L20 12Z" fill="#cccccc" opacity="0.85"/>
-  <!-- C++ text on top of play -->
-  <text x="7.5" y="15.2" font-family="Arial, sans-serif" font-weight="bold" font-size="7.5" fill="#1e1e1e" letter-spacing="-0.3">C++</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- VS Code paints activity-bar icons as a mask, so "C++" is cut out of the triangle -->
+  <defs>
+    <mask id="cut">
+      <rect width="24" height="24" fill="#fff"/>
+      <text x="6.6" y="14.6" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="7" letter-spacing="-0.4" fill="#000">C++</text>
+    </mask>
+  </defs>
+  <path d="M5 2.8 L21.5 12 L5 21.2 Z" fill="#c5c5c5" stroke="#c5c5c5" stroke-width="1.2" stroke-linejoin="round" mask="url(#cut)"/>
 </svg>
